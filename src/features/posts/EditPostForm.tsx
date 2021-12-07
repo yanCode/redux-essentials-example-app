@@ -1,17 +1,16 @@
-import { FC, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RouteComponentProps, useHistory } from 'react-router-dom'
-import { AppDispath, OnChangeType, PostParam, RootState } from 'src/app/store'
-import { postUpdated } from './postSlice'
+import {FC, useState} from 'react'
+import {useDispatch} from 'react-redux'
+import {RouteComponentProps, useHistory} from 'react-router-dom'
+import {AppDispath, OnChangeType, PostParam, useAppSelector} from 'src/app/store'
+import {getPostById, postUpdated} from './postSlice'
 
-const EditPostForm: FC<RouteComponentProps<PostParam>> = ({
-                                                              match: {
-                                                                  params: { postId },
-                                                              },
-                                                          }) => {
-    const post = useSelector((state: RootState) =>
-        state.posts.find((post) => post.id === postId)
-    )
+const EditPostForm: FC<RouteComponentProps<PostParam>> =
+    ({
+         match: {
+             params: {postId},
+         },
+     }) => {
+    const post = useAppSelector(state=>getPostById(state, postId))
 
     const dispatch:AppDispath = useDispatch()
     const history = useHistory()

@@ -1,5 +1,6 @@
 import {createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit'
 import {subHours, subMinutes} from "date-fns";
+import {RootState} from "../../app/store";
 
 export interface Post {
     id: string
@@ -86,3 +87,6 @@ const postsSlice = createSlice({
 export default postsSlice.reducer
 
 export const {postAdded, postUpdated, reactionAdded} = postsSlice.actions
+
+export const selectAllPosts = (state: RootState) => state.posts
+export const getPostById = (state:RootState, postId:string)=>state.posts.find(post=>post.id ===postId)

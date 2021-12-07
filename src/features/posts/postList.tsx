@@ -5,9 +5,10 @@ import { RootState } from 'src/app/store'
 import PostAuthor from "./PostAuthor";
 import TimeAgo from "./TimeAgo";
 import ReactionButtons from "./ReactionButtons";
+import {selectAllPosts} from "./postSlice";
 
 const PostList: FC = () => {
-    const posts = useSelector((state: RootState) => state.posts)
+    const posts = useSelector(selectAllPosts)
     const orderedPosts = posts.slice().sort((a, b) => b.date.localeCompare(a.date))
     const renderedPosts = orderedPosts.map(({id, title, content, user, date, reactions}) => (
         <article className="post-excerpt" key={id}>

@@ -1,6 +1,8 @@
 import {FC} from 'react'
 import {Link, RouteComponentProps} from 'react-router-dom'
 import {PostParam, useAppSelector} from 'src/app/store'
+import {useSelector} from "react-redux";
+import {getPostById} from "./postSlice";
 
 const SinglePostPage: FC<RouteComponentProps<PostParam>> =
     ({
@@ -8,9 +10,7 @@ const SinglePostPage: FC<RouteComponentProps<PostParam>> =
              params: {postId},
          },
      }) => {
-        const post = useAppSelector((state) =>
-            state.posts.find((post) => post.id === postId)
-        )
+        const post = useAppSelector(state=>getPostById(state, postId))
 
         if (!post) {
             return (
