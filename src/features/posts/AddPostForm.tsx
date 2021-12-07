@@ -1,11 +1,12 @@
 import {useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {AppDispath, OnChangeType, useAppSelector} from 'src/app/store'
+
 import {postAdded} from './postSlice'
+import {AppDispatch, OnChangeType, useAppSelector} from "../../types";
 
 
 export const AddPostForm = () => {
-    const dispatch: AppDispath = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const [title, setTitle] = useState('')
     const [content, setContent] = useState('')
     const [userId, setUserId] = useState('');

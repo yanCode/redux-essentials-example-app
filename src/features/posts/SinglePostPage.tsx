@@ -1,8 +1,8 @@
 import {FC} from 'react'
 import {Link, RouteComponentProps} from 'react-router-dom'
-import {PostParam, useAppSelector} from 'src/app/store'
-import {useSelector} from "react-redux";
+
 import {getPostById} from "./postSlice";
+import {PostParam, useAppSelector} from "../../types";
 
 const SinglePostPage: FC<RouteComponentProps<PostParam>> =
     ({

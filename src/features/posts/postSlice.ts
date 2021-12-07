@@ -1,7 +1,16 @@
-import {createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit'
 import {subHours, subMinutes} from "date-fns";
-import {RootState} from "../../app/store";
+import {client} from "../../api/client";
+import {RootState} from "../../types";
 
+
+export const addNewPost = createAsyncThunk(
+    'post/addNewPost',
+    async initPost =>{
+        const response = await client.post('/fakeApi/posts', initPost)
+        return response.data
+    }
+)
 export interface Post {
     id: string
     title: string
@@ -82,6 +91,12 @@ const postsSlice = createSlice({
             
         }
     },
+    extraReducers(builder){
+        builder
+            .addCase(addNewPost.fulfilled,(state, {payload}:PayloadAction<Post>)=>{
+                state.push(payload)
+        })
+    }
 })
 
 export default postsSlice.reducer

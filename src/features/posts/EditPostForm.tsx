@@ -1,8 +1,9 @@
 import {FC, useState} from 'react'
 import {useDispatch} from 'react-redux'
 import {RouteComponentProps, useHistory} from 'react-router-dom'
-import {AppDispath, OnChangeType, PostParam, useAppSelector} from 'src/app/store'
+
 import {getPostById, postUpdated} from './postSlice'
+import {AppDispatch, OnChangeType, PostParam, useAppSelector} from "../../types";
 
 const EditPostForm: FC<RouteComponentProps<PostParam>> =
     ({
@@ -12,7 +13,7 @@ const EditPostForm: FC<RouteComponentProps<PostParam>> =
      }) => {
     const post = useAppSelector(state=>getPostById(state, postId))
 
-    const dispatch:AppDispath = useDispatch()
+    const dispatch:AppDispatch = useDispatch()
     const history = useHistory()
 
     const [title, setTitle] = useState(post?.title)

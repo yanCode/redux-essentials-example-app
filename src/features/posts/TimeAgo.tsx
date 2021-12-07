@@ -1,4 +1,4 @@
-import React, {FC} from 'react';
+import  {FC} from 'react';
 import {formatDistanceToNow, parseISO} from "date-fns";
 
 interface TimeAgoProps {
