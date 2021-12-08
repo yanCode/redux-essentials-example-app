@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, memo, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PostAuthor from './PostAuthor'
@@ -10,7 +10,7 @@ import { Spinner } from '../../components/Spinner'
 
 type PostExcerptProps = { post: Post }
 
-const PostExcerpt: FC<PostExcerptProps> = ({
+let PostExcerpt: FC<PostExcerptProps> = ({
   post: { content, title, id, reactions, user, date },
 }) => {
   return (
@@ -26,6 +26,7 @@ const PostExcerpt: FC<PostExcerptProps> = ({
     </article>
   )
 }
+PostExcerpt = memo(PostExcerpt)
 
 const PostList: FC = () => {
   const dispatch = useAppDispatch()
