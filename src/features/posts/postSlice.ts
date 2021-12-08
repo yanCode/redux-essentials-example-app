@@ -1,12 +1,11 @@
-import { createAsyncThunk, createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit'
-import {subHours, subMinutes} from "date-fns";
+import {createAsyncThunk, createSlice, nanoid, PayloadAction} from '@reduxjs/toolkit'
 import {client} from "../../api/client";
 import {RootState} from "../../types";
 
 
-export const addNewPost = createAsyncThunk(
+export const addNewPost = createAsyncThunk<Post[], Pick<Post, "title"|"content"|"user">>(
     'post/addNewPost',
-    async initPost =>{
+    async (initPost) =>{
         const response = await client.post('/fakeApi/posts', initPost)
         return response.data
     }
@@ -38,16 +37,11 @@ export const getInitReactions = ():Reactions=>{
     }
 }
 
-const initialState = [
-    {id: '1', title: 'First Post!', content: 'Hello!',
-        date: subMinutes(new Date(), 3).toISOString(), user: "2",
-        reactions: getInitReactions()
-    },
-    {id: '2', title: 'Second Post', content: 'More text',
-        date: subHours(new Date(), 3).toISOString(), user: "1",
-        reactions: getInitReactions()
-    },
-] as Post[]
+const initialState = {
+    posts: [] as Post[],
+    status: 'idle',
+    error: null
+}
 
 const postsSlice = createSlice({
     initialState,
@@ -55,7 +49,7 @@ const postsSlice = createSlice({
     reducers: {
         postAdded: {
             reducer(state, action: PayloadAction<Post>) {
-                state.push(action.payload)
+                state.posts.push(action.payload)
             },
             prepare({title, content, user: userId}: Pick<Post, "title"|"content"|"user">) {
                 return {
@@ -75,7 +69,7 @@ const postsSlice = createSlice({
             state,
             {payload: {id, title, content}}: PayloadAction<Partial<Post>>
         ) => {
-            const post = state.find((post) => post.id === id)
+            const post = state.posts.find((post) => post.id === id)
             if (!post) {
                 return
             }
@@ -83,7 +77,7 @@ const postsSlice = createSlice({
             content && (post.content = content)
         },
         reactionAdded(state, {payload:{postId, reaction}}:PayloadAction<{postId:string, reaction:keyof Reactions}>){
-            const existingPost = state.find(post => post.id === postId)
+            const existingPost = state.posts.find(post => post.id === postId)
             if (!existingPost) {
                 return;
             }
@@ -93,15 +87,15 @@ const postsSlice = createSlice({
     },
     extraReducers(builder){
         builder
-            .addCase(addNewPost.fulfilled,(state, {payload}:PayloadAction<Post>)=>{
-                state.push(payload)
+            .addCase(addNewPost.fulfilled,(state, {payload})=>{
+                state.posts = payload
         })
     }
 })
 
 export default postsSlice.reducer
 
-export const {postAdded, postUpdated, reactionAdded} = postsSlice.actions
+export const { postUpdated, reactionAdded} = postsSlice.actions
 
-export const selectAllPosts = (state: RootState) => state.posts
-export const getPostById = (state:RootState, postId:string)=>state.posts.find(post=>post.id ===postId)
+export const selectAllPosts = (state: RootState) => state.posts.posts
+export const getPostById = (state:RootState, postId:string)=>state.posts.posts.find(post=>post.id ===postId)

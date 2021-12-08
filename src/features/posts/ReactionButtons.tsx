@@ -14,12 +14,12 @@ const reactionEmoji = {
     [key in ReactionTypes]: string
 }
 
-interface ReactionButtons {
+interface ReactionButtonProps {
     reactions: Reactions,
     id: string
 }
 
-const ReactionButtons: FC<Pick<ReactionButtons, "id" | "reactions">> = ({reactions, id}) => {
+const ReactionButtons: FC<Pick<ReactionButtonProps, "id" | "reactions">> = ({reactions, id}) => {
     const dispatch = useAppDispatch();
     const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {
         let reactionName = name as ReactionTypes;
