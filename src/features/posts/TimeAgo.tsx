@@ -1,23 +1,22 @@
-import  {FC} from 'react';
-import {formatDistanceToNow, parseISO} from "date-fns";
+import { FC } from 'react'
+import { formatDistanceToNow, parseISO } from 'date-fns'
 
 interface TimeAgoProps {
-    timestamp?: string
+  timestamp?: string
 }
 
-const TimeAgo: FC<TimeAgoProps> = ({timestamp}) => {
-    let timeAgo = ''
-    if (timestamp) {
-        const date = parseISO(timestamp)
-        const timePeriod = formatDistanceToNow(date)
-        timeAgo = `${timePeriod} ago`
-    }
-    return (
-        <span title={timestamp}>
-            &nbsp; <i>{timeAgo}</i>
-        </span>
-    );
+const TimeAgo: FC<TimeAgoProps> = ({ timestamp }) => {
+  let timeAgo = ''
+  if (timestamp) {
+    const date = parseISO(timestamp)
+    const timePeriod = formatDistanceToNow(date)
+    timeAgo = `${timePeriod} ago`
+  }
+  return (
+    <span title={timestamp}>
+      &nbsp; <i>{timeAgo}</i>
+    </span>
+  )
 }
 
-export default TimeAgo;
-;
+export default TimeAgo
