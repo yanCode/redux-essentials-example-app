@@ -10,9 +10,9 @@ const reactionEmoji = {
     heart: '❤️',
     rocket: '🚀',
     eyes: '👀'
-} as {
-    [key in ReactionTypes]: string
 }
+const reactionEmojiList = Object.entries(reactionEmoji)
+    .map(([name, emoji]) => ({name, emoji})) as { name: ReactionTypes, emoji: string }[]
 
 interface ReactionButtonProps {
     reactions: Reactions,
@@ -21,7 +21,7 @@ interface ReactionButtonProps {
 
 const ReactionButtons: FC<Pick<ReactionButtonProps, "id" | "reactions">> = ({reactions, id}) => {
     const dispatch = useAppDispatch();
-    const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {
+    const reactionButtons = reactionEmojiList.map(({name, emoji}) => {
         let reactionName = name as ReactionTypes;
         return (
             <button key={name} type='button'

@@ -13,3 +13,5 @@ export interface PostParam {
 }
 
 export type OnChangeType = ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+
+export type RequestType = 'idle' | 'loading' | 'succeeded' | 'failed'
