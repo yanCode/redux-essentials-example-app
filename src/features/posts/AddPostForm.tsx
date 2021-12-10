@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux'
 
 import { addNewPost } from './postSlice'
 import { AppDispatch, OnChangeType, useAppSelector } from '../../types'
+import { selectAllUsers } from '../users/usersSlice'
 
 export const AddPostForm = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -10,7 +11,7 @@ export const AddPostForm = () => {
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
   const [addRequestStatus, setAddRequestStatus] = useState('idle')
-  const users = useAppSelector((state) => state.users)
+  const users = useAppSelector(selectAllUsers)
   const onTitleChanged = (e: OnChangeType) => setTitle(e.target.value)
   const onContentChanged = (e: OnChangeType) => setContent(e.target.value)
   const onAuthorChanged = (e: OnChangeType) => setUserId(e.target.value)

@@ -1,9 +1,8 @@
 import { FC } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { selectUserById } from './usersSlice'
-import { RootState, useAppSelector } from '../../types'
-import { Post, selectAllPosts, selectPostsByUser } from '../posts/postSlice'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from '../../types'
+import { selectPostsByUser } from '../posts/postSlice'
 
 type UserPageProps = {
   userId: string
@@ -19,9 +18,10 @@ const UserPage: FC<RouteComponentProps<UserPageProps>> = ({
   //   const allPosts = selectAllPosts(state)
   //   return allPosts.filter((post) => post.user === userId)
   // })
-  const postsForUser = useSelector<RootState, Post[]>((state) =>
+  const postsForUser = useAppSelector((state) =>
     selectPostsByUser(state, userId)
   )
+
   if (!user) {
     return <div>invalid param</div>
   }

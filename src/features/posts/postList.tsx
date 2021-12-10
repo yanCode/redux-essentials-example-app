@@ -1,18 +1,17 @@
-import { FC, memo, useEffect } from 'react'
+import { FC, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PostAuthor from './PostAuthor'
 import TimeAgo from './TimeAgo'
 import ReactionButtons from './ReactionButtons'
-import { fetchPosts, Post, selectAllPosts } from './postSlice'
-import { useAppDispatch, useAppSelector } from '../../types'
+import { fetchPosts, selectAllPosts, getPostById } from './postSlice'
+import { PostParam, useAppDispatch, useAppSelector } from '../../types'
 import { Spinner } from '../../components/Spinner'
 
-type PostExcerptProps = { post: Post }
-
-let PostExcerpt: FC<PostExcerptProps> = ({
-  post: { content, title, id, reactions, user, date },
-}) => {
+let PostExcerpt: FC<PostParam> = ({ postId }) => {
+  const { id, title, user, date, content, reactions } = useAppSelector(
+    (state) => getPostById(state, postId)
+  )!
   return (
     <article className="post-excerpt" key={id}>
       <h3>{title}</h3>
@@ -26,7 +25,6 @@ let PostExcerpt: FC<PostExcerptProps> = ({
     </article>
   )
 }
-PostExcerpt = memo(PostExcerpt)
 
 const PostList: FC = () => {
   const dispatch = useAppDispatch()
@@ -48,8 +46,8 @@ const PostList: FC = () => {
     const orderedPosts = posts
       .slice()
       .sort((a, b) => b.date.localeCompare(a.date))
-    content = orderedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
+    content = orderedPosts.map(({ id: postId }) => (
+      <PostExcerpt key={postId} postId={postId} />
     ))
   } else if (postStatus === 'failed') {
     content = <div>{error}</div>
