@@ -6,26 +6,7 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit'
 import { client } from '../../api/client'
-import { RequestType, RootState } from '../../types'
-
-export interface Post {
-  id: string
-  title: string
-  content: string
-  user: string
-  date: string
-  reactions: Reactions
-}
-
-export type ReactionTypes = keyof Reactions
-
-export type Reactions = {
-  thumbsUp: number
-  hooray: number
-  heart: number
-  rocket: number
-  eyes: number
-}
+import { Post, Reactions, RequestType, RootState } from '../../types'
 
 export const getInitReactions = (): Reactions => {
   return {

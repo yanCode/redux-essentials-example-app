@@ -1,34 +1,39 @@
 import { FC } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
-
-import { getPostById } from './postSlice'
-import { PostParam, useAppSelector } from '../../types'
+import { PostParam } from '../../types'
+import { useGetPostQuery } from '../api/apiSlice'
+import { Spinner } from '../../components/Spinner'
 
 const SinglePostPage: FC<RouteComponentProps<PostParam>> = ({
   match: {
     params: { postId },
   },
 }) => {
-  const post = useAppSelector((state) => getPostById(state, postId))
+  // const post = useAppSelector((state) => getPostById(state, postId))
+  const {
+    data: post,
+    isFetching,
+    isSuccess,
+    isError,
+    error,
+  } = useGetPostQuery(postId)
 
-  if (!post) {
-    return (
-      <section>
-        <h2>Post not found!</h2>
-      </section>
-    )
-  }
-
-  return (
-    <section>
+  let content
+  if (isFetching) {
+    content = <Spinner text="Loading" />
+  } else if (isSuccess) {
+    content = (
       <article className="post">
-        <h2>{post.title}</h2>
-        <p className="post-content">{post.content}</p>
-        <Link to={`/editPost/${post.id}`} className="button">
+        <h2>{post!.title}</h2>
+        <p className="post-content">{post!.content}</p>
+        <Link to={`/editPost/${post!.id}`} className="button">
           Edit Post
         </Link>
       </article>
-    </section>
-  )
+    )
+  } else if (isError) {
+    content = <span>{error!}</span>
+  }
+  return <section>{content}</section>
 }
 export default SinglePostPage

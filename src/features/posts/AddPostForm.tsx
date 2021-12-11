@@ -1,37 +1,33 @@
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-
-import { addNewPost } from './postSlice'
-import { AppDispatch, OnChangeType, useAppSelector } from '../../types'
+import { OnChangeType, useAppSelector } from '../../types'
+import { useAddNewPostMutation } from '../api/apiSlice'
+import { selectAllUsers } from '../users/usersSlice'
 
 export const AddPostForm = () => {
-  const dispatch: AppDispatch = useDispatch()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [userId, setUserId] = useState('')
-  const [addRequestStatus, setAddRequestStatus] = useState('idle')
-  const users = useAppSelector((state) => state.users)
+
+  const [addNewPost, { isLoading }] = useAddNewPostMutation()
+  // const [addRequestStatus, setAddRequestStatus] = useState('idle')
+  const users = useAppSelector(selectAllUsers)
   const onTitleChanged = (e: OnChangeType) => setTitle(e.target.value)
   const onContentChanged = (e: OnChangeType) => setContent(e.target.value)
   const onAuthorChanged = (e: OnChangeType) => setUserId(e.target.value)
 
-  const canSave =
-    [title, content, userId].every(Boolean) && addRequestStatus === 'idle'
+  const canSave = [title, content, userId].every(Boolean) && !isLoading
 
   const onSavePostClicked = async () => {
     if (!canSave) {
       return
     }
     try {
-      setAddRequestStatus('pending')
-      await dispatch(addNewPost({ title, content, user: userId }))
+      await addNewPost({ title, content, user: userId }).unwrap()
       setTitle('')
       setContent('')
       setUserId('')
     } catch (err) {
       console.error('Failed to save the post: ', err)
-    } finally {
-      setAddRequestStatus('idle')
     }
   }
 
@@ -72,7 +68,7 @@ export const AddPostForm = () => {
           onChange={onContentChanged}
         />
         <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
-          Save Post
+          {isLoading ? 'Loading...' : 'Save Post'}
         </button>
       </form>
     </section>

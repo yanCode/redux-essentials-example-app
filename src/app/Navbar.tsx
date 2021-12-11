@@ -2,23 +2,27 @@ import { FC } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../types'
 import {
-  fetchNotifications,
-  selectAllNotifications,
+  fetchNotificationsWebsocket,
+  selectNotificationsMetadata,
+  useGetNotificationsQuery,
 } from '../features/notifications/notificationsSlice'
 
 export const Navbar: FC = () => {
   const dispatch = useAppDispatch()
-  const notifications = useAppSelector(selectAllNotifications)
+  useGetNotificationsQuery()
+  const notifications = useAppSelector(selectNotificationsMetadata)
   const numUnreadNotifications = notifications.filter((n) => !n.read).length
+  const fetchNewNotifications = () => {
+    dispatch(fetchNotificationsWebsocket())
+  }
+
   let unreadNotificationsBadge
   if (numUnreadNotifications > 0) {
     unreadNotificationsBadge = (
       <span className="badge">{numUnreadNotifications}</span>
     )
   }
-  const fetchNewNotifications = () => {
-    dispatch(fetchNotifications())
-  }
+
   return (
     <nav>
       <section>

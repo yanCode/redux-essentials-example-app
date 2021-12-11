@@ -1,6 +1,6 @@
 import { FC } from 'react'
-import { reactionAdded, Reactions } from './postSlice'
-import { useAppDispatch } from '../../types'
+import { Reactions } from '../../types'
+import { useAddReactionMutation } from '../api/apiSlice'
 
 type ReactionTypes = keyof Reactions
 const reactionEmoji = {
@@ -23,7 +23,7 @@ const ReactionButtons: FC<Pick<ReactionButtonProps, 'id' | 'reactions'>> = ({
   reactions,
   id,
 }) => {
-  const dispatch = useAppDispatch()
+  const [addReaction] = useAddReactionMutation()
   const reactionButtons = reactionEmojiList.map(({ name, emoji }) => {
     let reactionName = name as ReactionTypes
     return (
@@ -32,7 +32,7 @@ const ReactionButtons: FC<Pick<ReactionButtonProps, 'id' | 'reactions'>> = ({
         type="button"
         className="muted-button reaction-button"
         onClick={() => {
-          dispatch(reactionAdded({ postId: id, reaction: reactionName }))
+          addReaction({ postId: id, reaction: reactionName })
         }}
       >
         {emoji} {reactions[reactionName]}

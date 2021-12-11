@@ -1,23 +1,16 @@
 import { FC, useState } from 'react'
-import { useDispatch } from 'react-redux'
 import { RouteComponentProps, useHistory } from 'react-router-dom'
-
-import { getPostById, postUpdated } from './postSlice'
-import {
-  AppDispatch,
-  OnChangeType,
-  PostParam,
-  useAppSelector,
-} from '../../types'
+import { OnChangeType, PostParam } from '../../types'
+import { useEditPostMutation, useGetPostQuery } from '../api/apiSlice'
 
 const EditPostForm: FC<RouteComponentProps<PostParam>> = ({
   match: {
     params: { postId },
   },
 }) => {
-  const post = useAppSelector((state) => getPostById(state, postId))
+  const { data: post } = useGetPostQuery(postId)
+  const [updatePost, { isLoading }] = useEditPostMutation()
 
-  const dispatch: AppDispatch = useDispatch()
   const history = useHistory()
 
   const [title, setTitle] = useState(post?.title)
@@ -29,9 +22,9 @@ const EditPostForm: FC<RouteComponentProps<PostParam>> = ({
   const onTitleChanged = (e: OnChangeType) => setTitle(e.target.value)
   const onContentChanged = (e: OnChangeType) => setContent(e.target.value)
 
-  const onSavePostClicked = () => {
+  const onSavePostClicked = async () => {
     if (title && content) {
-      dispatch(postUpdated({ id: postId, title, content }))
+      await updatePost({ id: postId, title, content })
 
       history.push(`/posts/${postId}`)
     }
@@ -58,7 +51,7 @@ const EditPostForm: FC<RouteComponentProps<PostParam>> = ({
         />
       </form>
       <button type="button" onClick={onSavePostClicked}>
-        Save Post
+        {isLoading ? 'Loading' : 'Save Post'}
       </button>
     </section>
   )

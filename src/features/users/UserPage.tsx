@@ -1,9 +1,9 @@
-import { FC } from 'react'
+import { FC, useMemo } from 'react'
 import { Link, RouteComponentProps } from 'react-router-dom'
 import { selectUserById } from './usersSlice'
-import { RootState, useAppSelector } from '../../types'
-import { Post, selectAllPosts, selectPostsByUser } from '../posts/postSlice'
-import { useSelector } from 'react-redux'
+import { Post, useAppSelector } from '../../types'
+import { createSelector } from '@reduxjs/toolkit'
+import { useGetPostsQuery } from '../api/apiSlice'
 
 type UserPageProps = {
   userId: string
@@ -15,13 +15,23 @@ const UserPage: FC<RouteComponentProps<UserPageProps>> = ({
 }) => {
   const user = useAppSelector((state) => selectUserById(state, userId))
 
+  const selectPostsForUser = useMemo(() => {
+    return createSelector(
+      [(res: { data: Post[] }) => res.data, (_, userId: string) => userId],
+      (posts, userId) => posts?.filter((post) => post.user === userId) ?? []
+    )
+  }, [])
   // const postsForUser = useAppSelector((state) => {
   //   const allPosts = selectAllPosts(state)
   //   return allPosts.filter((post) => post.user === userId)
   // })
-  const postsForUser = useSelector<RootState, Post[]>((state) =>
-    selectPostsByUser(state, userId)
-  )
+  const { postsForUser } = useGetPostsQuery(undefined, {
+    selectFromResult: (result) => ({
+      ...result,
+      postsForUser: selectPostsForUser(result as { data: Post[] }, userId),
+    }),
+  })
+
   if (!user) {
     return <div>invalid param</div>
   }

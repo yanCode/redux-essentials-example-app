@@ -1,7 +1,8 @@
 import { useAppDispatch, useAppSelector } from '../../types'
 import {
   allNotificationRead,
-  selectAllNotifications,
+  selectMetadataEntities,
+  useGetNotificationsQuery,
 } from './notificationsSlice'
 import { selectAllUsers } from '../users/usersSlice'
 import { FC, useLayoutEffect } from 'react'
@@ -9,7 +10,8 @@ import { formatDistanceToNow, parseISO } from 'date-fns'
 import classNames from 'classnames'
 
 const NotificationsList: FC = () => {
-  const notifications = useAppSelector(selectAllNotifications)
+  const { data: notifications = [] } = useGetNotificationsQuery()
+  const notificationMetadata = useAppSelector(selectMetadataEntities)
   const users = useAppSelector(selectAllUsers)
   const dispatch = useAppDispatch()
 
@@ -24,12 +26,14 @@ const NotificationsList: FC = () => {
       const user = users.find(({ id }) => id === userId) || {
         name: 'Unknown User',
       }
-      const notificationClass = classNames('notification', { new: isNew })
+      const metadata = notificationMetadata[id]
+      const notificationClass = classNames('notification', {
+        new: metadata?.isNew ?? false,
+      })
       return (
         <div key={id} className={notificationClass}>
           <div>
-            <b>{user.name}</b>
-            {message}
+            <b>{user.name}</b> {message}
           </div>
           <div title={date}>
             <i>{timeAgo} ago</i>
